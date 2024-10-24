@@ -21,7 +21,7 @@ const (
 
 // GenCommunityTax randomized CommunityTax
 func GenCommunityTax(r *rand.Rand) math.LegacyDec {
-	return sdk.NewDecWithPrec(1, 2).Add(sdk.NewDecWithPrec(int64(r.Intn(30)), 2))
+	return sdkmath.NewDecWithPrec(1, 2).Add(sdkmath.NewDecWithPrec(int64(r.Intn(30)), 2))
 }
 
 // GenWithdrawEnabled returns a randomized WithdrawEnabled parameter.

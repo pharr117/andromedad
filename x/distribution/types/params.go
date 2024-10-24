@@ -12,12 +12,12 @@ import (
 // DefaultParams returns default distribution parameters
 func DefaultParams() Params {
 	return Params{
-		CommunityTax:        sdk.NewDecWithPrec(2, 2), // 2%
-		BaseProposerReward:  sdk.ZeroDec(),            // deprecated
-		BonusProposerReward: sdk.ZeroDec(),            // deprecated
+		CommunityTax:        sdkmath.NewDecWithPrec(2, 2), // 2%
+		BaseProposerReward:  sdkmath.LegacyZeroDec(),            // deprecated
+		BonusProposerReward: sdkmath.LegacyZeroDec(),            // deprecated
 		WithdrawAddrEnabled: true,
 		// Rewards Per Block default is 0
-		RewardsPerBlock: sdk.ZeroDec(), // 0%
+		RewardsPerBlock: sdkmath.LegacyZeroDec(), // 0%
 	}
 }
 

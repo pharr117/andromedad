@@ -152,8 +152,8 @@ func (suite *SimTestSuite) testSimulateMsgWithdrawValidatorCommission(tokenName 
 	// set module account coins
 	distrAcc := suite.distrKeeper.GetDistributionAccount(suite.ctx)
 	suite.Require().NoError(banktestutil.FundModuleAccount(suite.bankKeeper, suite.ctx, distrAcc.GetName(), sdk.NewCoins(
-		sdk.NewCoin(tokenName, sdk.NewInt(10)),
-		sdk.NewCoin("stake", sdk.NewInt(5)),
+		sdk.NewCoin(tokenName, sdkmath.NewInt(10)),
+		sdk.NewCoin("stake", sdkmath.NewInt(5)),
 	)))
 	suite.accountKeeper.SetModuleAccount(suite.ctx, distrAcc)
 
@@ -258,7 +258,7 @@ func (suite *SimTestSuite) SetupTest() {
 
 	suite.NoError(err)
 
-	suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{})
+	suite.ctx = suite.app.BaseApp.NewContext(false)
 
 	genesisVals := suite.stakingKeeper.GetAllValidators(suite.ctx)
 	suite.Require().Len(genesisVals, 1)
@@ -297,7 +297,7 @@ func (suite *SimTestSuite) getTestingValidator(accounts []simtypes.Account, comm
 	validator, err = validator.SetInitialCommission(commission)
 	require.NoError(err)
 	validator.DelegatorShares = math.LegacyNewDec(100)
-	validator.Tokens = sdk.NewInt(1000000)
+	validator.Tokens = sdkmath.NewInt(1000000)
 
 	suite.stakingKeeper.SetValidator(suite.ctx, validator)
 

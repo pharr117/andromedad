@@ -38,7 +38,7 @@ func (k Keeper) AllocateTokens(ctx sdk.Context, totalPreviousPower int64, bonded
 	// If rewardsToDrip is nil set to 0
 	if rewardsToDrip.IsNil() {
 
-		rewardsToDrip = sdk.ZeroDec()
+		rewardsToDrip = sdkmath.LegacyZeroDec()
 
 	}
 

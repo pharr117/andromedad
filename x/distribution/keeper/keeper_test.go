@@ -22,8 +22,8 @@ import (
 
 func TestSetWithdrawAddr(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(types.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(types.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Time: time.Now()})
 	addrs := simtestutil.CreateIncrementalAccounts(2)
@@ -68,8 +68,8 @@ func TestSetWithdrawAddr(t *testing.T) {
 
 func TestWithdrawValidatorCommission(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(types.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(types.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Time: time.Now()})
 	addrs := simtestutil.CreateIncrementalAccounts(1)
@@ -104,7 +104,7 @@ func TestWithdrawValidatorCommission(t *testing.T) {
 	distrKeeper.SetValidatorAccumulatedCommission(ctx, valAddr, types.ValidatorAccumulatedCommission{Commission: valCommission})
 
 	// withdraw commission
-	coins := sdk.NewCoins(sdk.NewCoin("mytoken", sdk.NewInt(1)), sdk.NewCoin("stake", sdk.NewInt(1)))
+	coins := sdk.NewCoins(sdk.NewCoin("mytoken", sdkmath.NewInt(1)), sdk.NewCoin("stake", sdkmath.NewInt(1)))
 	// if SendCoinsFromModuleToAccount is called, we know that the withdraw was successful
 	bankKeeper.EXPECT().SendCoinsFromModuleToAccount(gomock.Any(), "distribution", addrs[0], coins).Return(nil)
 
@@ -123,8 +123,8 @@ func TestWithdrawValidatorCommission(t *testing.T) {
 
 func TestGetTotalRewards(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(types.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(types.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Time: time.Now()})
 	addrs := simtestutil.CreateIncrementalAccounts(2)
@@ -164,8 +164,8 @@ func TestGetTotalRewards(t *testing.T) {
 
 func TestFundCommunityPool(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(types.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(types.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Time: time.Now()})
 	addrs := simtestutil.CreateIncrementalAccounts(1)
@@ -192,7 +192,7 @@ func TestFundCommunityPool(t *testing.T) {
 	initPool := distrKeeper.GetFeePool(ctx)
 	require.Empty(t, initPool.CommunityPool)
 
-	amount := sdk.NewCoins(sdk.NewInt64Coin("stake", 100))
+	amount := sdk.NewCoins(sdkmath.NewInt64Coin("stake", 100))
 	bankKeeper.EXPECT().SendCoinsFromAccountToModule(gomock.Any(), addrs[0], "distribution", amount).Return(nil)
 	err := distrKeeper.FundCommunityPool(ctx, amount, addrs[0])
 	require.Nil(t, err)

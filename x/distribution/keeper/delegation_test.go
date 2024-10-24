@@ -22,8 +22,8 @@ import (
 
 func TestCalculateRewardsBasic(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -50,9 +50,9 @@ func TestCalculateRewardsBasic(t *testing.T) {
 	// create validator with 50% commission
 	valAddr := sdk.ValAddress(valConsAddr0)
 	addr := sdk.AccAddress(valAddr)
-	val, err := distrtestutil.CreateValidator(valConsPk0, sdk.NewInt(1000))
+	val, err := distrtestutil.CreateValidator(valConsPk0, sdkmath.NewInt(1000))
 	require.NoError(t, err)
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(5, 1), sdkmath.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
 
 	// delegation mock
 	del := stakingtypes.NewDelegation(addr, valAddr, val.DelegatorShares)
@@ -100,8 +100,8 @@ func TestCalculateRewardsBasic(t *testing.T) {
 
 func TestCalculateRewardsAfterSlash(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -132,7 +132,7 @@ func TestCalculateRewardsAfterSlash(t *testing.T) {
 	stake := sdk.TokensFromConsensusPower(100, sdk.DefaultPowerReduction)
 	val, err := distrtestutil.CreateValidator(valConsPk0, stake)
 	require.NoError(t, err)
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(5, 1), sdkmath.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
 
 	del := stakingtypes.NewDelegation(addr, valAddr, val.DelegatorShares)
 
@@ -165,7 +165,7 @@ func TestCalculateRewardsAfterSlash(t *testing.T) {
 		valConsAddr0,
 		ctx.BlockHeight(),
 		valPower,
-		sdk.NewDecWithPrec(5, 1),
+		sdkmath.NewDecWithPrec(5, 1),
 		&val,
 		&distrKeeper,
 	)
@@ -195,8 +195,8 @@ func TestCalculateRewardsAfterSlash(t *testing.T) {
 
 func TestCalculateRewardsAfterManySlashes(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -227,7 +227,7 @@ func TestCalculateRewardsAfterManySlashes(t *testing.T) {
 	stake := sdk.TokensFromConsensusPower(valPower, sdk.DefaultPowerReduction)
 	val, err := distrtestutil.CreateValidator(valConsPk0, stake)
 	require.NoError(t, err)
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(5, 1), sdkmath.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
 
 	// delegation mocks
 	del := stakingtypes.NewDelegation(addr, valAddr, val.DelegatorShares)
@@ -259,7 +259,7 @@ func TestCalculateRewardsAfterManySlashes(t *testing.T) {
 		valConsAddr0,
 		ctx.BlockHeight(),
 		valPower,
-		sdk.NewDecWithPrec(5, 1),
+		sdkmath.NewDecWithPrec(5, 1),
 		&val,
 		&distrKeeper,
 	)
@@ -282,7 +282,7 @@ func TestCalculateRewardsAfterManySlashes(t *testing.T) {
 		valConsAddr0,
 		ctx.BlockHeight(),
 		valPower/2,
-		sdk.NewDecWithPrec(2, 1),
+		sdkmath.NewDecWithPrec(2, 1),
 		&val,
 		&distrKeeper,
 	)
@@ -310,8 +310,8 @@ func TestCalculateRewardsAfterManySlashes(t *testing.T) {
 
 func TestCalculateRewardsMultiDelegator(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -341,7 +341,7 @@ func TestCalculateRewardsMultiDelegator(t *testing.T) {
 	val, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
 	require.NoError(t, err)
 
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(5, 1), sdkmath.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
 
 	del0 := stakingtypes.NewDelegation(addr0, valAddr, val.DelegatorShares)
 
@@ -363,7 +363,7 @@ func TestCalculateRewardsMultiDelegator(t *testing.T) {
 
 	// second delegation
 	addr1 := sdk.AccAddress(valConsAddr1)
-	_, del1, err := distrtestutil.Delegate(ctx, distrKeeper, addr1, &val, sdk.NewInt(100), nil)
+	_, del1, err := distrtestutil.Delegate(ctx, distrKeeper, addr1, &val, sdkmath.NewInt(100), nil)
 	require.NoError(t, err)
 
 	stakingKeeper.EXPECT().Delegation(gomock.Any(), addr1, valAddr).Return(del1)
@@ -400,8 +400,8 @@ func TestCalculateRewardsMultiDelegator(t *testing.T) {
 
 func TestWithdrawDelegationRewardsBasic(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -431,7 +431,7 @@ func TestWithdrawDelegationRewardsBasic(t *testing.T) {
 	val, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
 	require.NoError(t, err)
 
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(5, 1), sdkmath.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
 
 	// delegation mock
 	del := stakingtypes.NewDelegation(addr, valAddr, val.DelegatorShares)
@@ -472,8 +472,8 @@ func TestWithdrawDelegationRewardsBasic(t *testing.T) {
 
 func TestCalculateRewardsAfterManySlashesInSameBlock(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -503,7 +503,7 @@ func TestCalculateRewardsAfterManySlashesInSameBlock(t *testing.T) {
 	val, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
 	require.NoError(t, err)
 
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(5, 1), sdkmath.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
 
 	// delegation mock
 	del := stakingtypes.NewDelegation(addr, valAddr, val.DelegatorShares)
@@ -541,19 +541,19 @@ func TestCalculateRewardsAfterManySlashesInSameBlock(t *testing.T) {
 		valConsAddr0,
 		ctx.BlockHeight(),
 		valPower,
-		sdk.NewDecWithPrec(5, 1),
+		sdkmath.NewDecWithPrec(5, 1),
 		&val,
 		&distrKeeper,
 	)
 
 	// slash the validator by 50% again
-	// stakingKeeper.Slash(ctx, valConsAddr0, ctx.BlockHeight(), valPower/2, sdk.NewDecWithPrec(5, 1))
+	// stakingKeeper.Slash(ctx, valConsAddr0, ctx.BlockHeight(), valPower/2, sdkmath.NewDecWithPrec(5, 1))
 	distrtestutil.SlashValidator(
 		ctx,
 		valConsAddr0,
 		ctx.BlockHeight(),
 		valPower/2,
-		sdk.NewDecWithPrec(5, 1),
+		sdkmath.NewDecWithPrec(5, 1),
 		&val,
 		&distrKeeper,
 	)
@@ -579,8 +579,8 @@ func TestCalculateRewardsAfterManySlashesInSameBlock(t *testing.T) {
 
 func TestCalculateRewardsMultiDelegatorMultiSlash(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -611,7 +611,7 @@ func TestCalculateRewardsMultiDelegatorMultiSlash(t *testing.T) {
 	addr := sdk.AccAddress(valAddr)
 	val, err := distrtestutil.CreateValidator(valConsPk0, sdk.TokensFromConsensusPower(valPower, sdk.DefaultPowerReduction))
 	require.NoError(t, err)
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(5, 1), sdkmath.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
 
 	// validator and delegation mocks
 	del := stakingtypes.NewDelegation(addr, valAddr, val.DelegatorShares)
@@ -638,7 +638,7 @@ func TestCalculateRewardsMultiDelegatorMultiSlash(t *testing.T) {
 		valConsAddr0,
 		ctx.BlockHeight(),
 		valPower,
-		sdk.NewDecWithPrec(5, 1),
+		sdkmath.NewDecWithPrec(5, 1),
 		&val,
 		&distrKeeper,
 	)
@@ -679,7 +679,7 @@ func TestCalculateRewardsMultiDelegatorMultiSlash(t *testing.T) {
 		valConsAddr0,
 		ctx.BlockHeight(),
 		valPower,
-		sdk.NewDecWithPrec(5, 1),
+		sdkmath.NewDecWithPrec(5, 1),
 		&val,
 		&distrKeeper,
 	)
@@ -706,8 +706,8 @@ func TestCalculateRewardsMultiDelegatorMultiSlash(t *testing.T) {
 
 func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -734,9 +734,9 @@ func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 	// create validator with 50% commission
 	valAddr := sdk.ValAddress(valConsAddr0)
 	addr := sdk.AccAddress(valAddr)
-	val, err := distrtestutil.CreateValidator(valConsPk0, sdk.NewInt(100))
+	val, err := distrtestutil.CreateValidator(valConsPk0, sdkmath.NewInt(100))
 	require.NoError(t, err)
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(5, 1), sdkmath.NewDecWithPrec(5, 1), math.LegacyNewDec(0))
 
 	// validator and delegation mocks
 	del := stakingtypes.NewDelegation(addr, valAddr, val.DelegatorShares)
@@ -765,7 +765,7 @@ func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 		distrKeeper,
 		sdk.AccAddress(valConsAddr1),
 		&val,
-		sdk.NewInt(100),
+		sdkmath.NewInt(100),
 		nil,
 	)
 	require.NoError(t, err)
@@ -889,8 +889,8 @@ func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 
 func Test100PercentCommissionReward(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(disttypes.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -917,9 +917,9 @@ func Test100PercentCommissionReward(t *testing.T) {
 	// create validator with 50% commission
 	valAddr := sdk.ValAddress(valConsAddr0)
 	addr := sdk.AccAddress(valAddr)
-	val, err := distrtestutil.CreateValidator(valConsPk0, sdk.NewInt(100))
+	val, err := distrtestutil.CreateValidator(valConsPk0, sdkmath.NewInt(100))
 	require.NoError(t, err)
-	val.Commission = stakingtypes.NewCommission(sdk.NewDecWithPrec(10, 1), sdk.NewDecWithPrec(10, 1), math.LegacyNewDec(0))
+	val.Commission = stakingtypes.NewCommission(sdkmath.NewDecWithPrec(10, 1), sdkmath.NewDecWithPrec(10, 1), math.LegacyNewDec(0))
 
 	// validator and delegation mocks
 	del := stakingtypes.NewDelegation(addr, valAddr, val.DelegatorShares)

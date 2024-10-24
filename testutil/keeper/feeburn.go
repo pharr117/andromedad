@@ -5,13 +5,13 @@ import (
 
 	"github.com/andromedaprotocol/andromedad/x/feeburn/keeper"
 	"github.com/andromedaprotocol/andromedad/x/feeburn/types"
-	tmdb "github.com/cometbft/cometbft-db"
-	"github.com/cometbft/cometbft/libs/log"
+	tmdb "github.com/cosmos/cosmos-db"
+	"cosmossdk.io/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/store"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	"cosmossdk.io/store"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -19,7 +19,7 @@ import (
 )
 
 func FeeburnKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
-	storeKey := sdk.NewKVStoreKey(types.StoreKey)
+	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
 	db := tmdb.NewMemDB()
@@ -38,7 +38,7 @@ func FeeburnKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 	)
 
-	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(stateStore)
 
 	// Initialize params
 	_ = k.SetParams(ctx, types.DefaultParams())

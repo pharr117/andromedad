@@ -17,15 +17,15 @@ import (
 func TestMigrateJSON(t *testing.T) {
 	encodingConfig := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	clientCtx := client.Context{}.
-		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
-		WithTxConfig(encodingConfig.TxConfig).
-		WithCodec(encodingConfig.Codec)
+// 		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
+		WithTxConfig(txConfig).
+// 		WithCodec(encodingConfig.Codec)
 
 	distrGenState := types.DefaultGenesisState()
 
 	oldDistrState := distrGenState
-	oldDistrState.Params.BaseProposerReward = sdk.NewDecWithPrec(1, 2)
-	oldDistrState.Params.BonusProposerReward = sdk.NewDecWithPrec(4, 2)
+	oldDistrState.Params.BaseProposerReward = sdkmath.NewDecWithPrec(1, 2)
+	oldDistrState.Params.BonusProposerReward = sdkmath.NewDecWithPrec(4, 2)
 
 	migrated := v3.MigrateJSON(oldDistrState)
 	require.Equal(t, migrated, distrGenState)

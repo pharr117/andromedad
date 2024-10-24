@@ -18,8 +18,8 @@ import (
 
 func TestParams(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	key := sdk.NewKVStoreKey(types.StoreKey)
-	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	key := storetypes.NewKVStoreKey(types.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Height: 1})
 
@@ -40,7 +40,7 @@ func TestParams(t *testing.T) {
 	)
 
 	// default params
-	communityTax := sdk.NewDecWithPrec(2, 2) // 2%
+	communityTax := sdkmath.NewDecWithPrec(2, 2) // 2%
 	withdrawAddrEnabled := true
 
 	testCases := []struct {
@@ -52,9 +52,9 @@ func TestParams(t *testing.T) {
 		{
 			name: "community tax > 1",
 			input: types.Params{
-				CommunityTax:        sdk.NewDecWithPrec(2, 0),
-				BaseProposerReward:  sdk.ZeroDec(),
-				BonusProposerReward: sdk.ZeroDec(),
+				CommunityTax:        sdkmath.NewDecWithPrec(2, 0),
+				BaseProposerReward:  sdkmath.LegacyZeroDec(),
+				BonusProposerReward: sdkmath.LegacyZeroDec(),
 				WithdrawAddrEnabled: withdrawAddrEnabled,
 			},
 			expErr:    true,
@@ -63,9 +63,9 @@ func TestParams(t *testing.T) {
 		{
 			name: "negative community tax",
 			input: types.Params{
-				CommunityTax:        sdk.NewDecWithPrec(-2, 1),
-				BaseProposerReward:  sdk.ZeroDec(),
-				BonusProposerReward: sdk.ZeroDec(),
+				CommunityTax:        sdkmath.NewDecWithPrec(-2, 1),
+				BaseProposerReward:  sdkmath.LegacyZeroDec(),
+				BonusProposerReward: sdkmath.LegacyZeroDec(),
 				WithdrawAddrEnabled: withdrawAddrEnabled,
 			},
 			expErr:    true,
@@ -75,8 +75,8 @@ func TestParams(t *testing.T) {
 			name: "base proposer reward > 1",
 			input: types.Params{
 				CommunityTax:        communityTax,
-				BaseProposerReward:  sdk.NewDecWithPrec(1, 2),
-				BonusProposerReward: sdk.ZeroDec(),
+				BaseProposerReward:  sdkmath.NewDecWithPrec(1, 2),
+				BonusProposerReward: sdkmath.LegacyZeroDec(),
 				WithdrawAddrEnabled: withdrawAddrEnabled,
 			},
 			expErr:    false,
@@ -86,8 +86,8 @@ func TestParams(t *testing.T) {
 			name: "bonus proposer reward > 1",
 			input: types.Params{
 				CommunityTax:        communityTax,
-				BaseProposerReward:  sdk.NewDecWithPrec(1, 2),
-				BonusProposerReward: sdk.ZeroDec(),
+				BaseProposerReward:  sdkmath.NewDecWithPrec(1, 2),
+				BonusProposerReward: sdkmath.LegacyZeroDec(),
 				WithdrawAddrEnabled: withdrawAddrEnabled,
 			},
 			expErr:    false,
@@ -97,8 +97,8 @@ func TestParams(t *testing.T) {
 			name: "all good",
 			input: types.Params{
 				CommunityTax:        communityTax,
-				BaseProposerReward:  sdk.ZeroDec(),
-				BonusProposerReward: sdk.ZeroDec(),
+				BaseProposerReward:  sdkmath.LegacyZeroDec(),
+				BonusProposerReward: sdkmath.LegacyZeroDec(),
 				WithdrawAddrEnabled: withdrawAddrEnabled,
 			},
 			expErr: false,

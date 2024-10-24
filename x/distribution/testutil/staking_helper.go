@@ -67,7 +67,7 @@ func SlashValidator(
 		panic("we can't test any other case here")
 	}
 
-	slashAmountDec := sdk.NewDecFromInt(validator.Tokens).Mul(sdk.NewDecWithPrec(5, 1))
+	slashAmountDec := sdk.NewDecFromInt(validator.Tokens).Mul(sdkmath.NewDecWithPrec(5, 1))
 	slashAmount := slashAmountDec.TruncateInt()
 
 	// cannot decrease balance below zero

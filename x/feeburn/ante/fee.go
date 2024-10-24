@@ -106,7 +106,7 @@ func (dfd DeductFeeDecorator) checkDeductFee(ctx sdk.Context, sdkTx sdk.Tx, fee 
 
 	// deduct the fees
 	if !fee.IsZero() {
-		feeBurnPercent, ok := sdk.NewIntFromString(dfd.feeburnKeeper.GetTxFeeBurnPercent(ctx))
+		feeBurnPercent, ok := sdkmath.NewIntFromString(dfd.feeburnKeeper.GetTxFeeBurnPercent(ctx))
 		if !ok {
 			return sdkerrors.ErrInvalidType
 		}
@@ -137,7 +137,7 @@ func DeductFees(bankKeeper BankKeeper, ctx sdk.Context, acc types.AccountI, fees
 	// Calculate burning amounts by given percentage and fee amounts
 	burningFees := sdk.Coins{}
 	for _, fee := range fees {
-		burningAmount := fee.Amount.Mul(bp).Quo(sdk.NewInt(100))
+		burningAmount := fee.Amount.Mul(bp).Quo(sdkmath.NewInt(100))
 		burningFees = burningFees.Add(sdk.NewCoin(fee.Denom, burningAmount))
 	}
 

@@ -77,7 +77,7 @@ func CanWithdrawInvariant(k Keeper) sdk.Invariant {
 
 		// iterate over all validators
 		k.stakingKeeper.IterateValidators(ctx, func(_ int64, val stakingtypes.ValidatorI) (stop bool) {
-			_, _ = k.WithdrawValidatorCommission(ctx, val.GetOperator())
+			_, _ = k.WithdrawValidatorCommission(ctx, sdk.ValAddress(val.GetOperator()))
 
 			delegationAddrs, ok := valDelegationAddrs[val.GetOperator().String()]
 			if ok {
@@ -88,7 +88,7 @@ func CanWithdrawInvariant(k Keeper) sdk.Invariant {
 				}
 			}
 
-			remaining = k.GetValidatorOutstandingRewardsCoins(ctx, val.GetOperator())
+			remaining = k.GetValidatorOutstandingRewardsCoins(ctx, sdk.ValAddress(val.GetOperator()))
 			if len(remaining) > 0 && remaining[0].Amount.IsNegative() {
 				return true
 			}

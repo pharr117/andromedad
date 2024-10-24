@@ -80,9 +80,9 @@ func TestMsgDepositIntoCommunityPool(t *testing.T) {
 		depositor  sdk.AccAddress
 		expectPass bool
 	}{
-		{sdk.NewCoins(sdk.NewInt64Coin("uatom", 10000)), sdk.AccAddress{}, false},
-		{sdk.Coins{sdk.NewInt64Coin("uatom", 10), sdk.NewInt64Coin("uatom", 10)}, delAddr1, false},
-		{sdk.NewCoins(sdk.NewInt64Coin("uatom", 1000)), delAddr1, true},
+		{sdk.NewCoins(sdkmath.NewInt64Coin("uatom", 10000)), sdk.AccAddress{}, false},
+		{sdk.Coins{sdkmath.NewInt64Coin("uatom", 10), sdkmath.NewInt64Coin("uatom", 10)}, delAddr1, false},
+		{sdk.NewCoins(sdkmath.NewInt64Coin("uatom", 1000)), delAddr1, true},
 	}
 	for i, tc := range tests {
 		msg := NewMsgFundCommunityPool(tc.amount, tc.depositor)
