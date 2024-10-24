@@ -619,7 +619,9 @@ func New(
 	// Set legacy router for backwards compatibility with gov v1beta1
 	app.GovKeeper.SetLegacyRouter(govRouter)
 
-	app.IBCHooksKeeper = ibchookskeeper.NewKeeper(keys[ibchookstypes.StoreKey])
+	app.IBCHooksKeeper = ibchookskeeper.NewKeeper(
+		keys[ibchookstypes.StoreKey],
+	)
 	ics20WasmHooks := ibchooks.NewWasmHooks(&app.IBCHooksKeeper, nil, Bech32Prefix)
 
 	ics20WasmHooks.ContractKeeper = &app.wasmKeeper
