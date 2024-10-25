@@ -135,10 +135,6 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
-	feeburnmodule "github.com/andromedaprotocol/andromedad/x/feeburn"
-	feeburnmodulekeeper "github.com/andromedaprotocol/andromedad/x/feeburn/keeper"
-	feeburnmoduletypes "github.com/andromedaprotocol/andromedad/x/feeburn/types"
-
 	_ "github.com/andromedaprotocol/andromedad/client/docs/statik"
 	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
@@ -255,7 +251,6 @@ var (
 		transfer.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
-		feeburnmodule.AppModuleBasic{},
 		ibchooks.AppModuleBasic{},
 	)
 
@@ -325,7 +320,6 @@ type App struct {
 	TransferKeeper      ibctransferkeeper.Keeper
 	wasmKeeper          wasmkeeper.Keeper
 
-	FeeburnKeeper  feeburnmodulekeeper.Keeper
 	IBCHooksKeeper ibchookskeeper.Keeper
 
 	// make scoped keepers public for test purposes
@@ -399,7 +393,6 @@ func New(
 		ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
 		wasmtypes.StoreKey, icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
-		feeburnmoduletypes.StoreKey,
 		ibchookstypes.StoreKey,
 	)
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -570,13 +563,6 @@ func New(
 		app.MsgServiceRouter(),
 	)
 
-	app.FeeburnKeeper = *feeburnmodulekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(keys[feeburnmoduletypes.StoreKey]),
-		keys[feeburnmoduletypes.MemStoreKey],
-		authtypes.NewModuleAddress(govtypes.ModuleName),
-	)
-
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec, runtime.NewKVStoreService(keys[evidencetypes.StoreKey]), app.StakingKeeper, app.SlashingKeeper,
@@ -702,7 +688,6 @@ func New(
 		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
-		feeburnmodule.NewAppModule(appCodec, app.FeeburnKeeper, app.AccountKeeper, app.BankKeeper),
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		ibc.NewAppModule(app.IBCKeeper),
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
@@ -722,7 +707,6 @@ func New(
 		authtypes.ModuleName, sdkbanktypes.ModuleName, govtypes.ModuleName, crisistypes.ModuleName, genutiltypes.ModuleName,
 		authz.ModuleName, feegrant.ModuleName, nft.ModuleName, group.ModuleName,
 		paramstypes.ModuleName, vestingtypes.ModuleName, consensustypes.ModuleName,
-		feeburnmoduletypes.ModuleName,
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
@@ -739,7 +723,6 @@ func New(
 		genutiltypes.ModuleName, evidencetypes.ModuleName, authz.ModuleName,
 		feegrant.ModuleName, nft.ModuleName, group.ModuleName,
 		paramstypes.ModuleName, upgradetypes.ModuleName, vestingtypes.ModuleName, consensustypes.ModuleName,
-		feeburnmoduletypes.ModuleName,
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
@@ -762,7 +745,6 @@ func New(
 		minttypes.ModuleName, crisistypes.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, authz.ModuleName,
 		feegrant.ModuleName, nft.ModuleName, group.ModuleName, paramstypes.ModuleName, upgradetypes.ModuleName,
 		vestingtypes.ModuleName, consensustypes.ModuleName,
-		feeburnmoduletypes.ModuleName,
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
@@ -832,8 +814,7 @@ func New(
 				FeegrantKeeper:  app.FeeGrantKeeper,
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			BankKeeper:    app.BankKeeper,
-			FeeburnKeeper: &app.FeeburnKeeper,
+			BankKeeper: app.BankKeeper,
 		},
 	)
 	if err != nil {
@@ -905,7 +886,6 @@ func New(
 		transfer.NewAppModule(app.TransferKeeper),
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
-		feeburnmodule.NewAppModule(appCodec, app.FeeburnKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()
@@ -1087,7 +1067,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(wasmtypes.ModuleName).WithKeyTable(wasmtypes.ParamKeyTable()) //nolint:staticcheck
-	paramsKeeper.Subspace(feeburnmoduletypes.ModuleName)
 	return paramsKeeper
 }
 
